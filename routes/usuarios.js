@@ -55,13 +55,30 @@ router.post(
 );
 
 // ✏️ Actualizar un usuario
-router.put('/:id', (req, res) => {
-    const { user_name, user_password } = req.body;
-    db.query('UPDATE usuarios SET user_name = ?, user_password = ? WHERE user_id = ?', [user_name, user_password, req.params.id], (err) => {
-        if (err) return res.status(500).json({ error: err });
-        res.json({ message: 'Usuario actualizado' });
-    });
-});
+router.put(
+    '/:id',
+    [
+        body('user_name').isLength({ min: 3 }),
+        body('user_password').isLength({ min: 6 })
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+        const { user_name, user_password } = req.body;
+        const hashedPassword = await bcrypt.hash(user_password, 10);
+
+        db.query(
+        'UPDATE usuarios SET user_name = ?, user_password = ? WHERE user_id = ?',
+        [user_name, hashedPassword, req.params.id],
+        (err) => {
+            if (err) return res.status(500).json({ error: err });
+            res.json({ message: 'Usuario actualizado correctamente' });
+        }
+        );
+    }
+);
+
 
 // ❌ Eliminar un usuario
 router.delete('/:id', (req, res) => {
