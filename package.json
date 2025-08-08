@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/JohnRiverAG/api-usuarios/issues"
   },
-  "homepage": "https://github.com/JohnRiverAG/api-usuarios#readme"
+  "homepage": "https://github.com/JohnRiverAG/api-usuarios#readme",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.3"
+  }
 }
